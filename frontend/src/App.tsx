@@ -15,6 +15,8 @@ import { Settings } from "./types";
 import { IS_RUNNING_ON_CLOUD } from "./config";
 import { PicoBadge } from "./components/PicoBadge";
 import { OnboardingNote } from "./components/OnboardingNote";
+import { usePersistedState } from "./hooks/usePersistedState";
+import { UrlInputSection } from "./components/UrlInputSection";
 
 function App() {
   const [appState, setAppState] = useState<"INITIAL" | "CODING" | "CODE_READY">("INITIAL");
@@ -23,10 +25,15 @@ function App() {
   const [executionConsole, setExecutionConsole] = useState<string[]>([]);
   const [updateInstruction, setUpdateInstruction] = useState("");
   const [history, setHistory] = useState<string[]>([]);
-  const [settings, setSettings] = useState<Settings>({
-    openAiApiKey: null,
-    isImageGenerationEnabled: true,
-  });
+  const [settings, setSettings] = usePersistedState<Settings>(
+    {
+      openAiApiKey: null,
+      screenshotOneApiKey: null,
+      isImageGenerationEnabled: true,
+      editorTheme: "cobalt",
+    },
+    "setting"
+  );
 
   const downloadCode = () => {
     // Create a blob from the generated code
@@ -72,10 +79,12 @@ function App() {
   // Initial version creation
   function doCreate(referenceImages: string[]) {
     setReferenceImages(referenceImages);
-    doGenerateCode({
-      generationType: "create",
-      image: referenceImages[0],
-    });
+    if (referenceImages.length > 0) {
+      doGenerateCode({
+        generationType: "create",
+        image: referenceImages[0],
+      });
+    }
   }
 
   // Subsequent updates
@@ -154,7 +163,6 @@ function App() {
                   </div>
                   <div className="text-gray-400 uppercase text-sm text-center mt-1">Original Screenshot</div>
                 </div>
-
                 <div className="bg-gray-400 px-4 py-2 rounded text-sm hidden">
                   <h2 className="text-lg mb-4 border-b border-gray-800">Console</h2>
                   {executionConsole.map((line, index) => (
@@ -171,9 +179,13 @@ function App() {
 
       <main className="py-2 lg:pl-96">
         {appState === "INITIAL" && (
-          <>
+          <div className="flex flex-col justify-center items-center gap-y-10">
             <ImageUpload setReferenceImages={doCreate} />
-          </>
+            <UrlInputSection
+              doCreate={doCreate}
+              screenshotOneApiKey={settings.screenshotOneApiKey}
+            />
+          </div>
         )}
 
         {(appState === "CODING" || appState === "CODE_READY") && (
@@ -200,7 +212,10 @@ function App() {
                 <Preview code={generatedCode} device="mobile" />
               </TabsContent>
               <TabsContent value="code">
-                <CodeMirror code={generatedCode} />
+                <CodeMirror
+                  code={generatedCode}
+                  editorTheme={settings.editorTheme}
+                />
               </TabsContent>
             </Tabs>
           </div>

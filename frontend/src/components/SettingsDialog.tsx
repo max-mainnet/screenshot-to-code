@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Dialog,
   DialogClose,
@@ -12,6 +13,7 @@ import { Settings } from "../types";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import { Select } from "./ui/select";
 
 interface Props {
   settings: Settings;
@@ -19,6 +21,13 @@ interface Props {
 }
 
 function SettingsDialog({ settings, setSettings }: Props) {
+  const handleThemeChange = (theme: string) => {
+    setSettings((s) => ({
+      ...s,
+      editorTheme: theme,
+    }));
+  };
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -49,8 +58,9 @@ function SettingsDialog({ settings, setSettings }: Props) {
         <div className="flex flex-col space-y-4">
           <Label htmlFor="openai-api-key">
             <div>OpenAI API key</div>
-            <div className="font-light mt-2">
-              Never stored. Overrides your .env config.
+            <div className="font-light mt-2 leading-relaxed">
+              Only stored in your browser. Never stored on servers. Overrides
+              your .env config.
             </div>
           </Label>
 
@@ -65,7 +75,50 @@ function SettingsDialog({ settings, setSettings }: Props) {
               }))
             }
           />
+
+          <Label htmlFor="screenshot-one-api-key">
+            <div>ScreenshotOne API key</div>
+            <div className="font-light mt-2 leading-relaxed">
+              Only stored in your browser. Never stored on servers.{" "}
+              <a
+                href="https://screenshotone.com?via=screenshot-to-code"
+                className="underline"
+                target="_blank"
+              >
+                Get 100 screenshots/mo for free.
+              </a>
+            </div>
+          </Label>
+
+          <Input
+            id="screenshot-one-api-key"
+            placeholder="ScreenshotOne API key"
+            value={settings.screenshotOneApiKey || ""}
+            onChange={(e) =>
+              setSettings((s) => ({
+                ...s,
+                screenshotOneApiKey: e.target.value,
+              }))
+            }
+          />
+
+          <Label htmlFor="editor-theme">
+            <div>Editor Theme</div>
+          </Label>
+          <div>
+            <Select // Use the custom Select component here
+              id="editor-theme"
+              value={settings.editorTheme}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                handleThemeChange(e.target.value)
+              }
+            >
+              <option value="cobalt">Cobalt</option>
+              <option value="espresso">Espresso</option>
+            </Select>
+          </div>
         </div>
+
         <DialogFooter>
           <DialogClose>Save</DialogClose>
         </DialogFooter>
