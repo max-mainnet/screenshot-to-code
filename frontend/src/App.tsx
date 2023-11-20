@@ -5,13 +5,7 @@ import Preview from "./components/Preview";
 import { CodeGenerationParams, generateCode } from "./generateCode";
 import Spinner from "./components/Spinner";
 import classNames from "classnames";
-import {
-  FaCode,
-  FaDesktop,
-  FaDownload,
-  FaMobile,
-  FaUndo,
-} from "react-icons/fa";
+import { FaCode, FaDesktop, FaDownload, FaMobile, FaUndo } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
@@ -23,9 +17,7 @@ import { PicoBadge } from "./components/PicoBadge";
 import { OnboardingNote } from "./components/OnboardingNote";
 
 function App() {
-  const [appState, setAppState] = useState<"INITIAL" | "CODING" | "CODE_READY">(
-    "INITIAL"
-  );
+  const [appState, setAppState] = useState<"INITIAL" | "CODING" | "CODE_READY">("INITIAL");
   const [generatedCode, setGeneratedCode] = useState<string>("");
   const [referenceImages, setReferenceImages] = useState<string[]>([]);
   const [executionConsole, setExecutionConsole] = useState<string[]>([]);
@@ -111,11 +103,7 @@ function App() {
             <h1 className="text-2xl ">Screenshot to Code</h1>
             <SettingsDialog settings={settings} setSettings={setSettings} />
           </div>
-          {appState === "INITIAL" && (
-            <h2 className="text-sm text-gray-500 mb-2">
-              Drag & drop a screenshot to get started.
-            </h2>
-          )}
+          {appState === "INITIAL" && <h2 className="text-sm text-gray-500 mb-2">Drag & drop a screenshot to get started.</h2>}
 
           {IS_RUNNING_ON_CLOUD && !settings.openAiApiKey && <OnboardingNote />}
 
@@ -143,16 +131,10 @@ function App() {
                     <Button onClick={doUpdate}>Update</Button>
                   </div>
                   <div className="flex items-center gap-x-2 mt-2">
-                    <Button
-                      onClick={downloadCode}
-                      className="flex items-center gap-x-2"
-                    >
+                    <Button onClick={downloadCode} className="flex items-center gap-x-2">
                       <FaDownload /> Download
                     </Button>
-                    <Button
-                      onClick={reset}
-                      className="flex items-center gap-x-2"
-                    >
+                    <Button onClick={reset} className="flex items-center gap-x-2">
                       <FaUndo />
                       Reset
                     </Button>
@@ -168,26 +150,15 @@ function App() {
                       "scanning relative": appState === "CODING",
                     })}
                   >
-                    <img
-                      className="w-[340px] border border-gray-200 rounded-md"
-                      src={referenceImages[0]}
-                      alt="Reference"
-                    />
+                    <img className="w-[340px] border border-gray-200 rounded-md" src={referenceImages[0]} alt="Reference" />
                   </div>
-                  <div className="text-gray-400 uppercase text-sm text-center mt-1">
-                    Original Screenshot
-                  </div>
+                  <div className="text-gray-400 uppercase text-sm text-center mt-1">Original Screenshot</div>
                 </div>
 
                 <div className="bg-gray-400 px-4 py-2 rounded text-sm hidden">
-                  <h2 className="text-lg mb-4 border-b border-gray-800">
-                    Console
-                  </h2>
+                  <h2 className="text-lg mb-4 border-b border-gray-800">Console</h2>
                   {executionConsole.map((line, index) => (
-                    <div
-                      key={index}
-                      className="border-b border-gray-400 mb-2 text-gray-600 font-mono"
-                    >
+                    <div key={index} className="border-b border-gray-400 mb-2 text-gray-600 font-mono">
                       {line}
                     </div>
                   ))}
